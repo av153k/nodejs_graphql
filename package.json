@@ -1,0 +1,19 @@
+{
+  "name": "graphql_api",
+  "version": "1.0.0",
+  "description": "A tutorial API project built using NodeJS and GraphQL",
+  "main": "server.js",
+  "scripts": {
+    "test": "npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/av153k/nodejs_graphql.git"
+  },
+  "author": "Abhishek Anand",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/av153k/nodejs_graphql/issues"
+  },
+  "homepage": "https://github.com/av153k/nodejs_graphql#readme"
+}
