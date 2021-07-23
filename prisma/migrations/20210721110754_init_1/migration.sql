@@ -1,0 +1,21 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "isAuthor" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "lastLoginDevice" TEXT NOT NULL DEFAULT E'',
+ADD COLUMN     "lastLoginTime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+-- CreateTable
+CREATE TABLE "Blog" (
+    "id" SERIAL NOT NULL,
+    "title" TEXT NOT NULL,
+    "shortDescription" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "lastUpdatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "likedBy" INTEGER[],
+    "authorId" INTEGER NOT NULL,
+
+    PRIMARY KEY ("id")
+);
+
+-- AddForeignKey
+ALTER TABLE "Blog" ADD FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -14,13 +14,16 @@ type Mutation {
 }
 
 type Query {
-  getUser(email: String, phone: String): UserResult!
+  getUser: UserResult!
 }
 
 type User {
   createdAt: DateTime!
   email: String!
   id: ID!
+  isAuthor: Boolean!
+  lastLoginDevice: String!
+  lastLoginTime: DateTime!
   lastUpdatedAt: DateTime!
   name: String!
   password: String!
@@ -32,7 +35,8 @@ type UserAlreadyExistsError {
   type: String!
 }
 
-type UserCreationSuccess {
+type UserAuthenticationSuccess {
+  token: String!
   type: String!
   user: User!
 }
@@ -46,10 +50,16 @@ input UserInput {
   createdAt: DateTime
   email: String
   id: ID
+  lastLoginDevice: String!
   lastUpdatedAt: DateTime
   name: String
   password: String
   phone: String
 }
 
-union UserResult = User | UserAlreadyExistsError | UserCreationSuccess | UserDoesNotExistError
+type UserLoginError {
+  message: String!
+  type: String!
+}
+
+union UserResult = User | UserAlreadyExistsError | UserAuthenticationSuccess | UserDoesNotExistError | UserLoginError

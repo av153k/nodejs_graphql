@@ -1,3 +1,4 @@
+import { Blog } from "../../todo/schema/Todo";
 import {
   createUnionType,
   Field,
@@ -28,21 +29,33 @@ class User {
 
   @Field({ nullable: false })
   lastUpdatedAt!: Date;
+
+  @Field()
+  isAuthor: boolean = false;
+
+  @Field()
+  lastLoginTime: Date = new Date(Date());
+
+  @Field()
+  lastLoginDevice!: string;
 }
 
 @ObjectType()
 class UserAlreadyExistsError {
   @Field()
-  type: String = "UserAlreadyExists";
+  type: string = "UserAlreadyExists";
 
   @Field()
   message!: string;
 }
 
 @ObjectType()
-class UserCreationSuccess {
+class UserAuthenticationSuccess {
   @Field()
-  type: String = "UserCreationSuccess";
+  type: string = "UserAuthenticationSuccess";
+
+  @Field({ nullable: false })
+  token!: string;
 
   @Field()
   user!: User;
@@ -51,7 +64,7 @@ class UserCreationSuccess {
 @ObjectType()
 class UserDoesNotExistError {
   @Field()
-  type: String = "UserDoesNotExist";
+  type: string = "UserDoesNotExist";
 
   @Field()
   message!: string;
@@ -60,7 +73,7 @@ class UserDoesNotExistError {
 @ObjectType()
 class UserLoginError {
   @Field()
-  type: String = "UserLoginError";
+  type: string = "UserLoginError";
 
   @Field()
   message!: string;
@@ -68,13 +81,22 @@ class UserLoginError {
 
 const userResultUnion = createUnionType({
   name: "UserResult",
-  types: () => [User, UserAlreadyExistsError, UserDoesNotExistError, UserCreationSuccess] as const,
+  types: () =>
+    [
+      User,
+      UserAlreadyExistsError,
+      UserDoesNotExistError,
+      UserAuthenticationSuccess,
+      UserLoginError,
+    ] as const,
   resolveType: (data) => {
     if ("type" in data) {
       if (data.type == "UserAlreadyExists") {
         return UserAlreadyExistsError;
-      } else if(data.type == "UserCreationSuccess") {
-        return UserCreationSuccess;
+      } else if (data.type == "UserAuthenticationSuccess") {
+        return UserAuthenticationSuccess;
+      } else if (data.type == "UserLoginError") {
+        return UserLoginError;
       } else {
         return UserDoesNotExistError;
       }
@@ -106,13 +128,17 @@ class UserInput {
 
   @Field({ nullable: true })
   lastUpdatedAt!: Date;
+
+  @Field({ nullable: false })
+  lastLoginDevice!: string;
 }
 
 export {
   User,
   UserAlreadyExistsError,
   UserDoesNotExistError,
-  UserCreationSuccess,
+  UserAuthenticationSuccess,
   userResultUnion,
   UserInput,
+  UserLoginError,
 };
